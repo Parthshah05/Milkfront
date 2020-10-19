@@ -2,7 +2,7 @@ import React from 'react';
 import Routes from "./routes";
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
-import './App.css';
+
 
 
 const client = new ApolloClient({
