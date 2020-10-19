@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Mutation } from "react-apollo";
 import {
   Table,
   Container,
@@ -13,7 +14,7 @@ import {
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
 import Header from "../header";
-import { getuserQuery } from "../../queries/queries";
+import { getuserQuery,deleteUserMutation } from "../../queries/queries";
 
 class UserList extends Component {
    
@@ -40,10 +41,24 @@ class UserList extends Component {
         <td><Button color="info">
             Edit
         </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button color="danger">
+        &nbsp;&nbsp;&nbsp;
+        <Mutation mutation={deleteUserMutation}>
+        {(mutation) => (
+        <Button color="danger"
+         onClick={() => {
+                mutation({
+                  variables: { id: user.id },
+                  refetchQueries: [{ query: getuserQuery }],
+                });
+              }}
+              >
         Delete
-        </Button></td>
+        </Button>
+        )}
+        </Mutation>
+        &nbsp;&nbsp;&nbsp;
+        <Button color="success">View</Button>
+        </td>
         </tr>
 
           );
@@ -115,7 +130,7 @@ class UserList extends Component {
 
 
 export default compose(
-    
+    graphql(deleteUserMutation,{name:"deleteUserMutatin"}),
     graphql(getuserQuery, { name: "getuserQuery" })
 )(UserList);
 

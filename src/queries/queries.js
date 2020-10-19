@@ -54,10 +54,24 @@ const addRoleMutation = gql`
     }
 `;
 
-const deleteUserMtation = gql`
+const deleteUserMutation = gql`
     mutation deleteUser($id: Int){
         deleteUser(id:$id){
             id
+        }
+    }
+
+`;
+
+const getUserByIdMutation = gql`
+    mutation getUser($id: Int){
+        getUser(id:$id){
+            id
+            name
+            email
+            role{
+                name
+            }
         }
     }
 
@@ -122,4 +136,4 @@ const getbundle_productQuery = gql`
 `;
 
 
-export { userloginMutation, adduserMutation, getroleQuery,getbundle_productQuery ,deleteUserMtation,addProductMutation, addRoleMutation, addBundleMutation, addBundle_ProductMutation, getproductQuery, getbundleQuery,getuserQuery };
+export { userloginMutation, adduserMutation, getUserByIdMutation,getroleQuery,getbundle_productQuery ,deleteUserMutation,addProductMutation, addRoleMutation, addBundleMutation, addBundle_ProductMutation, getproductQuery, getbundleQuery,getuserQuery };
