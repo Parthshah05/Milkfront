@@ -1,9 +1,11 @@
 import React,{Component}  from "react";
-import Header from "./header";
+import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-
-import { adduserMutation,getroleQuery } from '../queries/queries';
+import * as userActions from "../../store/actions/userAction";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { adduserMutation,getroleQuery } from '../../queries/queries';
 
 import {
   Card,
@@ -27,18 +29,27 @@ class Signup extends Component {
             name: '',
             email: '',
             password: '',
-            role_id:''
+            role_id:'',
+            error:false,
+            success:false,
+            errormessage:""
         };
+        if(localStorage.getItem('userLogin') !== null)
+    {
+       this.props.history.push('/userlist');
+    }
     }
     displayRoles(){
-        var data = this.props.getroleQuery;
-        if(data.loading){
-            return( <option disabled>Loading roles</option> );
-        } else {
-            return data.getRole.map(role => {
-                return( <option key={ role.id } value={role.id}>{ role.name }</option> );
-            });
-        }
+      var data = this.props.getroleQuery;
+     
+      if(data.loading){
+          return( <option disabled>Loading roles</option> );
+      } else {
+          return data.getRole.map(role => {
+              return( <option key={ role.id } value={role.id}>{ role.name }</option> );
+          });
+      }
+    
     }
     submitForm(e){
         e.preventDefault()
@@ -51,11 +62,38 @@ class Signup extends Component {
                 role_id:parseInt(this.state.role_id)
             },
           
+        }).then((data) => {
+          this.props.history.push("/");
+        })
+        .catch((error) => {
+         // console.log(error);
+          if(error){
+            this.setState({
+              error:error,
+              success:false,
+              errormessage:error.message.slice(15),
+            });
+          }
+          
+
         });
-        this.props.history.push('/');
     }
     render(){
     
+      const errorMessage = () => {
+        return (
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{ display:this.state.error ? "" : "none" }}
+              >
+                {this.state.errormessage}
+              </div>
+            </div>
+          </div>
+        );
+      };
         return (
                 <div>
                 <Header />
@@ -72,6 +110,7 @@ class Signup extends Component {
                           >
                             <h5>Please Register here</h5>
                           </CardHeader>
+                          {errorMessage()}
                          
                           <CardBody>
                             <Form id="register" onSubmit={ this.submitForm.bind(this) }>

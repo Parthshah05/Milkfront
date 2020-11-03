@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Mutation } from "react-apollo";
+import { Link, withRouter } from "react-router-dom";
+//import { Mutation } from "react-apollo";
 import {
   Table,
   Container,
@@ -11,64 +11,91 @@ import {
   CardHeader,
   CardBody,
 } from "reactstrap";
-import { graphql } from 'react-apollo';
-import {flowRight as compose} from 'lodash';
+// import { graphql } from "react-apollo";
+// import { flowRight as compose } from "lodash";
 import Header from "../header";
-import { getuserQuery,deleteUserMutation } from "../../queries/queries";
+// import {
+//   getuserQuery,
+//   deleteUserMutation,
+//   getUserByIdMutation,
+// } from "../../queries/queries";
+import UserData from "./userdata";
+import * as userActions from "../../store/actions/userAction";
+import { connect } from "react-redux";
 
 class UserList extends Component {
+ 
+  constructor(props) {
+    
+    super(props);
+    this.state = {
+      selected: null,
+    };
+   
+  }
+
+  componentDidMount() {
+   
+    // if(localStorage.getItem('userLogin') == null)
+    // {
+    //    this.props.history.push('/');
+    // }
+   
+    const { getAllUsers } = this.props;
+    if (getAllUsers == null )
+    {
+     //
+    }
+    else{
+    getAllUsers();
+    }
+  }
+
+  displayUsers() {
+    
+    const { loading, error, userList, deleteUser } = this.props;
    
 
- displayUsers(){
-     var data = this.props.getuserQuery;
-
-    if(data.loading){
-         return( <div>Loading Users...</div> );
-     } else {
-      return data.getUser.map(user => {
-          return (
-              <tr>
-            <td >
-            {user.id}
-        </td>
-        <td>
-            {user.name}
-        </td>
-        <td>{user.email}</td>
-        <td>
-            {user.role.name}
-        </td>
-        <td><Button color="info">
-            Edit
-        </Button>
-        &nbsp;&nbsp;&nbsp;
-        <Mutation mutation={deleteUserMutation}>
-        {(mutation) => (
-        <Button color="danger"
-         onClick={() => {
-                mutation({
-                  variables: { id: user.id },
-                  refetchQueries: [{ query: getuserQuery }],
-                });
-              }}
+    if (error) {
+      return <div>Something went wrong!</div>;
+    } else if (loading) {
+      return <div>Loading Users...</div>;
+    } else {
+      // localStorage.setItem("data", data);
+      return userList.map((user) => {
+        return (
+          <tr>
+            <td>{user.id}</td>
+            <td>{user.name}</td>
+            <td>{user.email}</td>
+            <td>{user.role.name}</td>
+            <td>
+              <Button color="info">Edit</Button>
+              &nbsp;&nbsp;&nbsp;
+              <Button
+                color="danger"
+                onClick={() => {
+                  deleteUser(user.id);
+                }}
               >
-        Delete
-        </Button>
-        )}
-        </Mutation>
-        &nbsp;&nbsp;&nbsp;
-        <Button color="success">View</Button>
-        </td>
-        </tr>
-
-          );
-
+                Delete
+              </Button>
+              &nbsp;&nbsp;&nbsp;
+              <Button
+                color="success"
+                key={user.id}
+                onClick={(e) => this.setState({ selected: user.id })}
+              >
+                View
+              </Button>
+            </td>
+          </tr>
+        );
       });
-     }
-
- }
+    }
+  }
   render() {
-        return(
+    return (
       <div>
         <Header />
         <Container>
@@ -86,17 +113,16 @@ class UserList extends Component {
                 </CardHeader>
                 <br></br>
                 <Col sm="4">
-                <Button
-                
-                // onClick={onclick}
-                style={{
-                    background: "#1ABC9C",
-                    color: "#BC1A4B",
-                    borderColor: "#1ABC9C",
-                }}
-                >
-                <Link to="/userinsert">Add User</Link>
-                </Button>
+                  <Button
+                    // onClick={onclick}
+                    style={{
+                      background: "#1ABC9C",
+                      color: "#BC1A4B",
+                      borderColor: "#1ABC9C",
+                    }}
+                  >
+                    <Link to="/userinsert">Add User</Link>
+                  </Button>
                 </Col>
                 <CardBody>
                   <Table bordered>
@@ -109,28 +135,32 @@ class UserList extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
-                    {this.displayUsers()}
-                      
-                    </tbody>
-                  
-              
+                    <tbody>{this.displayUsers()}</tbody>
                   </Table>
                 </CardBody>
               </Card>
             </Col>
           </Row>
         </Container>
+        <UserData UserId={this.state.selected} />
       </div>
     );
-    
-
+  }
 }
-    }
 
+function mapStateToProps({ user }) {
+  return {
+    error: user.error,
+    loading: user.loading,
+    userList: user.userList,
+  };
+}
 
-export default compose(
-    graphql(deleteUserMutation,{name:"deleteUserMutatin"}),
-    graphql(getuserQuery, { name: "getuserQuery" })
-)(UserList);
+function mapDispatchToProps(dispatch) {
+  return {
+    getAllUsers: () => dispatch(userActions.fetchUsers()),
+    deleteUser: (userId) => dispatch(userActions.deleteUser(userId)),
+  };
+}
 
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserList));

@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import * as userActions from "../store/actions/userAction";
 import {
   Collapse,
   Navbar,
@@ -53,10 +56,22 @@ const Header = (props) => {
                 <b>Bundle_Product</b>
               </NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink href="/role">
                 <b>Role</b>
               </NavLink>
+            </NavItem> */}
+            <NavItem>
+              <div
+                onClick={() => {
+                  // this.props.logoutUser();
+                  localStorage.removeItem("userLogin");
+                }}
+              >
+                <NavLink href="/">
+                  <b>Signout</b>
+                </NavLink>
+              </div>
             </NavItem>
           </Nav>
         </Collapse>
@@ -65,4 +80,14 @@ const Header = (props) => {
   );
 };
 
-export default Header;
+function mapStateToProps() {
+  return {};
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logoutUser: () => dispatch(userActions.logoutUser()),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

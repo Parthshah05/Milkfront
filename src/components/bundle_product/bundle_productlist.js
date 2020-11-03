@@ -13,16 +13,20 @@ import {
 
 
 import Header from "../header";
-import { graphql } from 'react-apollo';
+import { graphql,Mutation } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
 
-import { getbundle_productQuery } from "../../queries/queries";
+import { getbundle_productQuery,deleteBundle_ProductMutation } from "../../queries/queries";
 
 class Bundle_ProductList extends Component {
 
     displayBundle_Product(){
+      if(localStorage.getItem('userLogin') == null)
+  {
+     this.props.history.push('/');
+  }
         var data = this.props.getbundle_productQuery;
-   
+        if(data.error == null) {
        if(data.loading){
             return( <div>Loading Users...</div> );
         } else {
@@ -45,16 +49,29 @@ class Bundle_ProductList extends Component {
                Edit
            </Button>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           <Button color="danger">
-           Delete
-           </Button></td>
+           <Mutation mutation={deleteBundle_ProductMutation}>
+        {(mutation) => (
+        <Button color="danger"
+         onClick={() => {
+                mutation({
+                  variables: { id: bnp.id },
+                  refetchQueries: [{ query: getbundle_productQuery }],
+                });
+              }}
+              >
+        Delete
+        </Button>
+        )}
+        </Mutation>
+        &nbsp;&nbsp;&nbsp;
+        <Button color="success" >View</Button></td>
            </tr>
    
              );
    
          });
         }
-   
+      }
     }
 
   render() {
@@ -115,5 +132,6 @@ class Bundle_ProductList extends Component {
 
 export default compose(
     
-    graphql(getbundle_productQuery, { name: "getbundle_productQuery" })
+    graphql(getbundle_productQuery, { name: "getbundle_productQuery" }),
+    graphql(deleteBundle_ProductMutation,{name:"deleteBundle_ProductMutation"})
 )(Bundle_ProductList);

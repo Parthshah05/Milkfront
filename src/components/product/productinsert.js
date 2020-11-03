@@ -2,7 +2,7 @@ import React,{Component}  from "react";
 import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { addProductMutation } from '../../queries/queries';
 
 import {
@@ -20,6 +20,7 @@ import {
 } from "reactstrap";
 
 
+
 class ProductInsert extends Component {
     constructor(props){
         super(props);
@@ -27,9 +28,14 @@ class ProductInsert extends Component {
             name: '',
             description: '',
             image: '',
-            price:''
+            price:'',
+            error:false,
+            success:false,
+            errormessage:""
         };
     }
+     
+     
     submitForm(e){
         e.preventDefault()
         // use the adduserMutation
@@ -41,14 +47,51 @@ class ProductInsert extends Component {
                 price:parseInt(this.state.price)
             },
           
+        }).then((data) => {
+          this.props.history.push("/product");
+        })
+        .catch((error) => {
+          console.log(error);
+          if(error){
+            this.setState({
+              error:error,
+              success:false,
+              errormessage:error.message.slice(15),
+            });
+          }
+          
+
         });
-        this.props.history.push('/product');
     }
     render(){
+      const errorMessage = () => {
+        return (
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{ display:this.state.error ? "" : "none" }}
+              >
+                {this.state.errormessage}
+              </div>
+            </div>
+          </div>
+        );
+      };
     
         return (
                 <div>
                 <Header />
+                <Button
+                style={{
+                      background: "#1ABC9C",
+                      color: "#BC1A4B",
+                      borderColor: "#1ABC9C",
+                      }}>
+                       <Link to="/product"> 
+                      <b>Back</b>
+                      </Link>
+                  </Button>
                   <Container>
                     <Row>
                       <Col sm="12">
@@ -62,7 +105,7 @@ class ProductInsert extends Component {
                           >
                             <h5>Product Insert</h5>
                           </CardHeader>
-                         
+                         {errorMessage()}
                           <CardBody>
                             <Form id="register" onSubmit={ this.submitForm.bind(this) }>
                             <FormGroup>
@@ -84,13 +127,14 @@ class ProductInsert extends Component {
                                 />
                               </FormGroup>
                               <FormGroup>
-                                <Label >Image</Label>
-                                <Input
+                              <Label >Image</Label>
+                              <Input
                                   type="text"
                                   onChange={ (e) => this.setState({ image: e.target.value }) }
-                                  placeholder="Image"
+                                  placeholder="Enter Image"
                                   required
                                 />
+        
                               </FormGroup>
                               <FormGroup>
                                 <Label >Price</Label>

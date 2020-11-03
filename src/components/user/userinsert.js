@@ -2,7 +2,7 @@ import React,{Component}  from "react";
 import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-
+import { Link } from "react-router-dom";
 import { adduserMutation,getroleQuery } from '../../queries/queries';
 
 import {
@@ -27,11 +27,16 @@ class Userinsert extends Component {
             name: '',
             email: '',
             password: '',
-            role_id:''
+            role_id:'',
+            error:false,
+            success:false,
+            errormessage:""
         };
     }
     displayRoles(){
+
         var data = this.props.getroleQuery;
+        if(data.error == null) {
         if(data.loading){
             return( <option disabled>Loading roles</option> );
         } else {
@@ -39,6 +44,7 @@ class Userinsert extends Component {
                 return( <option key={ role.id } value={role.id}>{ role.name }</option> );
             });
         }
+      }
     }
     submitForm(e){
         e.preventDefault()
@@ -51,14 +57,52 @@ class Userinsert extends Component {
                 role_id:parseInt(this.state.role_id)
             },
           
+        }).then((data) => {
+          this.props.history.push("/userlist");
+        })
+        .catch((error) => {
+          console.log(error);
+          if(error){
+            this.setState({
+              error:error,
+              success:false,
+              errormessage:error.message.slice(15),
+            });
+          }
+          
+
         });
-        this.props.history.push('/userlist');
+
     }
     render(){
+      const errorMessage = () => {
+        return (
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{ display:this.state.error ? "" : "none" }}
+              >
+                {this.state.errormessage}
+              </div>
+            </div>
+          </div>
+        );
+      };
     
         return (
                 <div>
                 <Header />
+                <Button
+                style={{
+                      background: "#1ABC9C",
+                      color: "#BC1A4B",
+                      borderColor: "#1ABC9C",
+                      }}>
+                       <Link to="/userlist"> 
+                      <b>Back</b>
+                      </Link>
+                  </Button>
                   <Container>
                     <Row>
                       <Col sm="12">
@@ -72,7 +116,7 @@ class Userinsert extends Component {
                           >
                             <h5>User Insert</h5>
                           </CardHeader>
-                         
+                         {errorMessage()}
                           <CardBody>
                             <Form id="register" onSubmit={ this.submitForm.bind(this) }>
                             <FormGroup>

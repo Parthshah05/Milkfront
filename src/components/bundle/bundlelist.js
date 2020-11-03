@@ -11,17 +11,22 @@ import {
   CardBody,
 } from "reactstrap";
 
-import { graphql } from 'react-apollo';
+import { graphql,Mutation } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
 import Header from "../header";
-import { getbundleQuery } from "../../queries/queries";
+import { getbundleQuery,deleteBundleMutation } from "../../queries/queries";
 
 
 class BundleList extends Component {
+  
 
     displayBundles(){
+      if(localStorage.getItem('userLogin') == null)
+  {
+     this.props.history.push('/');
+  }
         var data = this.props.getbundleQuery;
-   
+        if(data.error == null) {
        if(data.loading){
             return( <div>Loading Users...</div> );
         } else {
@@ -39,16 +44,29 @@ class BundleList extends Component {
                Edit
            </Button>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           <Button color="danger">
-           Delete
-           </Button></td>
+           <Mutation mutation={deleteBundleMutation}>
+        {(mutation) => (
+        <Button color="danger"
+         onClick={() => {
+                mutation({
+                  variables: { id: bund.id },
+                  refetchQueries: [{ query: getbundleQuery }],
+                });
+              }}
+              >
+        Delete
+        </Button>
+        )}
+        </Mutation>
+        &nbsp;&nbsp;&nbsp;
+        <Button color="success" >View</Button></td>
            </tr>
    
              );
    
          });
         }
-   
+      }
     }
     
 
@@ -107,5 +125,6 @@ class BundleList extends Component {
 }
 export default compose(
     
-    graphql(getbundleQuery, { name: "getbundleQuery" })
+    graphql(getbundleQuery, { name: "getbundleQuery" }),
+    graphql(deleteBundleMutation, { name: "deleteBundleMutation" })
 )(BundleList);

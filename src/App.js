@@ -1,26 +1,19 @@
-import React from 'react';
+import React from "react";
 import Routes from "./routes";
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'react-apollo';
-
-
-
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'
-});
+import { ApolloProvider } from "react-apollo";
+import client from "./client";
+import store from "./store/store";
+import { Provider } from "react-redux";
 
 function App() {
- 
   return (
-    
     <ApolloProvider client={client}>
-    <div id="main">
-        
-        <Routes />
-       {/* <BookList />
-        <AddBook /> */}
-    </div>
-</ApolloProvider>
+      <Provider store={store}>
+        <div id="main">
+          <Routes />
+        </div>
+        </Provider>
+    </ApolloProvider>
   );
 }
 

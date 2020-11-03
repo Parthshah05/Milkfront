@@ -13,35 +13,52 @@ import {
 } from "reactstrap";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-import Header from "../header";
-import { getuserQuery,getUserByIdMutation } from "../../queries/queries";
+//import Header from "../header";
+import { getUserByIdMutation } from "../../queries/queries";
 
 class UserData extends Component {
    
 
  displayUserData(){
-     var data = this.props.getuserQuery;
-
-    if(data.loading){
-         return( <div>Loading Users...</div> );
-     } else {
-      return data.getUser.map(user => {
-          return (
-              <div>
-                    <h4>{user.id}</h4>
-                    <h3>{user.name}</h3>
-                    <h4>{user.email}</h4>
-                    <h4>{user.role.name}</h4>
+    // var data = this.props.getUserByIdMutation;
+     const userid   = this.props.UserId == null ? 0 : this.props.UserId;
+     console.log(userid);
+      const { Users } = this.props.getUserByIdMutation;
+    // if(userid == null){
+    //      return( <div>Loading Users...</div> );
+    //  } else {
+      // var data = this.props.getUserByIdMutation;
+      // return data.getUser.map(user => {
+      //     return (
+      //         <div>
+      //               <h4>{user.id}</h4>
+      //               <h3>{user.name}</h3>
+      //               <h4>{user.email}</h4>
+      //               <h4>{user.role.name}</h4>
+      //         </div>
+      //     );
+      //   });
+    // }
+    if(Users){
+     
+      return(
+          <div>
+               <h2>{ Users.name }</h2>
+              <p>{ Users.email }</p>
+              <p>{ Users.role.name }</p> 
+             
               </div>
-          );
-        });
-     }
+      );
+   
+  } else {
+      return( <div>No Users selected...</div> );
+  }
 
  }
   render() {
         return(
       <div>
-        <Header />
+       
         <Container>
           <Row>
             <Col sm="12">
@@ -53,7 +70,7 @@ class UserData extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Users</h5>
+                  <h5>User Details</h5>
                 </CardHeader>
                 <br></br>
                 <Col sm="4">
@@ -86,9 +103,26 @@ class UserData extends Component {
 }
     }
 
-
-export default compose(
-    graphql(getUserByIdMutation,{name:"getUserByIdMutatin"}),
-    graphql(getuserQuery, { name: "getuserQuery" })
-)(UserData);
+export default compose
+(graphql(getUserByIdMutation, {name:"getUserByIdMutation"}, {
+  
+      options: (props) => {
+        const userId   = this.props.UserId == null ? 0 : this.props.UserId;
+        console.log(userId);
+          return {
+              variables: {
+                  id: userId
+                  
+              },
+            
+          }
+          
+      }
+      
+  }))(UserData);
+  
+// export default compose(
+//     graphql(getUserByIdMutation,{name:"getUserByIdMutation"})
+    
+// )(UserData);
 

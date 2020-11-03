@@ -1,139 +1,194 @@
-import { gql } from 'apollo-boost';
+import { gql } from "apollo-boost";
 
 const userloginMutation = gql`
-    mutation userLogin($email: String!, $password: String!){
-        userLogin(email: $email, password: $password){
-            email
-            
-        }
+  mutation userLogin($email: String!, $password: String!) {
+    userLogin(email: $email, password: $password) {
+      email
+      token
+      role
     }
+  }
 `;
 
 const adduserMutation = gql`
-    mutation addUser($name: String, $email: String,$password: String, $role_id: Int){
-        addUser(name:$name, email: $email, password: $password, role_id:$role_id){
-            name
-            email
-        }
+  mutation addUser(
+    $name: String
+    $email: String
+    $password: String
+    $role_id: Int
+  ) {
+    addUser(
+      name: $name
+      email: $email
+      password: $password
+      role_id: $role_id
+    ) {
+      name
+      email
     }
+  }
 `;
 
 const getroleQuery = gql`
-    {
-        getRole {
-            name
-            id
-        }
+  {
+    getRole {
+      name
+      id
     }
+  }
 `;
 
 const addProductMutation = gql`
-    mutation addProduct($name: String, $description: String,$image: String, $price: Int){
-        addProduct(name:$name, description: $description, image: $image, price:$price){
-            name
-            price
-        }
+  mutation addProduct(
+    $name: String
+    $description: String
+    $image: String
+    $price: Int
+  ) {
+    addProduct(
+      name: $name
+      description: $description
+      image: $image
+      price: $price
+    ) {
+      name
+      price
     }
+  }
 `;
 
 const addBundleMutation = gql`
-    mutation addBundle($name: String){
-        addBundle(name:$name){
-            name
-            
-        }
+  mutation addBundle($name: String) {
+    addBundle(name: $name) {
+      name
     }
+  }
 `;
 
 const addRoleMutation = gql`
-    mutation addRole($name: String){
-        addRole(name:$name){
-            name
-            
-        }
+  mutation addRole($name: String) {
+    addRole(name: $name) {
+      name
     }
+  }
 `;
 
 const deleteUserMutation = gql`
-    mutation deleteUser($id: Int){
-        deleteUser(id:$id){
-            id
-        }
+  mutation deleteUser($id: Int) {
+    deleteUser(id: $id) {
+      id
     }
+  }
+`;
 
+const deleteProductMutation = gql`
+  mutation deleteProduct($id: Int) {
+    deleteProduct(id: $id) {
+      id
+    }
+  }
+`;
+
+const deleteBundleMutation = gql`
+  mutation deleteBundle($id: Int) {
+    deleteBundle(id: $id) {
+      id
+    }
+  }
+`;
+const deleteBundle_ProductMutation = gql`
+  mutation deleteBundle_Product($id: Int) {
+    deleteBundle_Product(id: $id) {
+      id
+    }
+  }
 `;
 
 const getUserByIdMutation = gql`
-    mutation getUser($id: Int){
-        getUser(id:$id){
-            id
-            name
-            email
-            role{
-                name
-            }
-        }
+  mutation getUser($id: Int) {
+    getUser(id: $id) {
+      id
+      name
+      email
+      role {
+        name
+      }
     }
-
+  }
 `;
 
 const addBundle_ProductMutation = gql`
-    mutation addBundle_Product($product_id: Int,$bundle_id: Int){
-        addBundle_Product(product_id:$product_id,bundle_id:$bundle_id){
-            product_id
-            
-        }
+  mutation addBundle_Product($product_id: Int, $bundle_id: Int) {
+    addBundle_Product(product_id: $product_id, bundle_id: $bundle_id) {
+      product_id
     }
+  }
 `;
 
 const getproductQuery = gql`
-    {
-        getProduct {
-            id
-            name
-            description
-            image
-            price
-        }
+  {
+    getProduct {
+      id
+      name
+      description
+      image
+      price
     }
+  }
 `;
 
 const getbundleQuery = gql`
-    {
-        getBundle {
-            name
-            id
-        }
+  {
+    getBundle {
+      name
+      id
     }
+  }
 `;
 const getuserQuery = gql`
-    {
-        getUser {
-            id
-            name
-            email
-            password
-            role{
-                name
-            }
-        }
+  {
+    getUser {
+      id
+      name
+      email
+      password
+      role {
+        name
+      }
     }
+  }
 `;
 
 const getbundle_productQuery = gql`
-    {
-        getBundle_Product {
-            id
-            product{
-                name
-                price
-            }
-            bundle{
-                name
-            }
-        }
+  {
+    getBundle_Product {
+      id
+      product {
+        name
+        price
+      }
+      bundle {
+        name
+      }
     }
+  }
 `;
 
-
-export { userloginMutation, adduserMutation, getUserByIdMutation,getroleQuery,getbundle_productQuery ,deleteUserMutation,addProductMutation, addRoleMutation, addBundleMutation, addBundle_ProductMutation, getproductQuery, getbundleQuery,getuserQuery };
+export {
+  userloginMutation,
+  adduserMutation,
+  deleteProductMutation,
+  getUserByIdMutation,
+  getroleQuery,
+  getbundle_productQuery,
+  deleteUserMutation,
+  addProductMutation,
+  addRoleMutation,
+  deleteBundleMutation,
+  addBundleMutation,
+  deleteBundle_ProductMutation,
+  addBundle_ProductMutation,
+  getproductQuery,
+  getbundleQuery,
+  getuserQuery,
+};

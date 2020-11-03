@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-import Signin from "./components/signin";
-import Signup from "./components/signup";
+import Signin from "./components/user/signin";
+import Signup from "./components/user/signup";
 import Product from "./components/product/productlist";
 import Bundle from "./components/bundle/bundlelist";
 import Bundle_Product from "./components/bundle_product/bundle_productlist";

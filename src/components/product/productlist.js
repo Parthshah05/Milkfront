@@ -10,18 +10,22 @@ import {
   CardHeader,
   CardBody,
 } from "reactstrap";
-import { graphql } from 'react-apollo';
+import { graphql,Mutation } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
 import Header from "../header";
-import { getproductQuery } from "../../queries/queries";
+import { getproductQuery,deleteProductMutation } from "../../queries/queries";
 
 
 
 class ProductList extends Component {
 
     displayProducts(){
+      if(localStorage.getItem('userLogin') == null)
+  {
+     this.props.history.push('/');
+  }
         var data = this.props.getproductQuery;
-   
+       if(data.error == null) {
        if(data.loading){
             return( <div>Loading Users...</div> );
         } else {
@@ -41,15 +45,30 @@ class ProductList extends Component {
                Edit
            </Button>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           <Button color="danger">
-           Delete
-           </Button></td>
+           <Mutation mutation={deleteProductMutation}>
+        {(mutation) => (
+        <Button color="danger"
+         onClick={() => {
+                mutation({
+                  variables: { id: prod.id },
+                  refetchQueries: [{ query: getproductQuery }],
+                });
+              }}
+              >
+        Delete
+        </Button>
+        )}
+        </Mutation>
+        &nbsp;&nbsp;&nbsp;
+        <Button color="success" >View</Button>
+        </td>
            </tr>
    
              );
    
          });
         }
+      }
    
     }
     
@@ -117,7 +136,8 @@ class ProductList extends Component {
 
 export default compose(
     
-    graphql(getproductQuery, { name: "getproductQuery" })
+    graphql(getproductQuery, { name: "getproductQuery" }),
+    graphql(deleteProductMutation,{name:"deleteProductMutation"})
 )(ProductList);
 
 

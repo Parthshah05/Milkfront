@@ -2,7 +2,7 @@ import React,{Component}  from "react";
 import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { addBundleMutation } from '../../queries/queries';
 
 import {
@@ -25,6 +25,9 @@ class BundleInsert extends Component {
         super(props);
         this.state = {
             name: '',
+            error:false,
+            success:false,
+            errormessage:""
             
         };
     }
@@ -37,14 +40,50 @@ class BundleInsert extends Component {
                
             },
           
+        }).then((data) => {
+          this.props.history.push("/bundle");
+        })
+        .catch((error) => {
+          console.log(error);
+          if(error){
+            this.setState({
+              error:error,
+              success:false,
+              errormessage:error.message.slice(15),
+            });
+          }
+          
+
         });
-        this.props.history.push('/bundle');
     }
     render(){
-    
+      const errorMessage = () => {
+        return (
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{ display:this.state.error ? "" : "none" }}
+              >
+                {this.state.errormessage}
+              </div>
+            </div>
+          </div>
+        );
+      };
         return (
                 <div>
                 <Header />
+                <Button
+                style={{
+                      background: "#1ABC9C",
+                      color: "#BC1A4B",
+                      borderColor: "#1ABC9C",
+                      }}>
+                       <Link to="/bundle"> 
+                      <b>Back</b>
+                      </Link>
+                  </Button>
                   <Container>
                     <Row>
                       <Col sm="12">
@@ -58,7 +97,7 @@ class BundleInsert extends Component {
                           >
                             <h5>Bundle Insert</h5>
                           </CardHeader>
-                         
+                         {errorMessage()}
                           <CardBody>
                             <Form id="register" onSubmit={ this.submitForm.bind(this) }>
                             <FormGroup>
