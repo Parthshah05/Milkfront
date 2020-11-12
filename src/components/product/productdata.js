@@ -13,35 +13,35 @@ import {
 } from "reactstrap";
 import Header from "../header";
 import { connect } from "react-redux";
-import * as userActions from '../../store/actions/userAction';
+import * as productActions from '../../store/actions/productAction';
 
-class UserData extends Component {  
+class ProductData extends Component {  
 
   componentDidMount() {
-    const { getUserById, match: {params: { id }}} = this.props;
+    const { getProductById, match: {params: { id }}} = this.props;
 
-    getUserById(parseInt(id));
+    getProductById(parseInt(id));
   }
 
- displayUserData(Users){
-    if(Users){
+ displayProductData(Products){
+    if(Products){
      
       return(
           <div>
-               <h4><b>Name : </b>{ Users.name }</h4>
-              <h4><b>Email : </b>{ Users.email }</h4>
-              <h4><b>Role : </b>{ Users.role.name }</h4> 
+               <h4><b>Name : </b>{ Products.name }</h4>
+              <h4><b>Description : </b>{ Products.description }</h4>
+              <h4><b>Price : </b>{ Products.price }</h4> 
              
           </div>
       );
    
   } else {
-      return( <div>No Users selected...</div> );
+      return( <div>No Products selected...</div> );
   }
 
  }
   render() {
-    const { selectedUser } = this.props;
+    const { selectedProduct } = this.props;
     
 
         return(
@@ -58,7 +58,7 @@ class UserData extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>User Details</h5>
+                  <h5>Products Details</h5>
                 </CardHeader>
                 <br></br>
                 <Col sm="4">
@@ -71,12 +71,12 @@ class UserData extends Component {
                     borderColor: "#1ABC9C",
                 }}
                 >
-                <Link to="/userlist">Back</Link>
+                <Link to="/product">Back</Link>
                 </Button>
                 </Col>
                 <CardBody>
                 <tbody>
-                    {this.displayUserData(selectedUser)}
+                    {this.displayProductData(selectedProduct)}
                 </tbody>
                
                 </CardBody>
@@ -91,21 +91,21 @@ class UserData extends Component {
 }
     }
 
-    function mapStateToProps({ user }) {
+    function mapStateToProps({ product }) {
       return {
-        error: user.error,
-        loading: user.loading,
-        selectedUser: user.selectedUser,
+        error: product.error,
+        loading: product.loading,
+        selectedProduct: product.selectedProduct,
       };
     }
     
     function mapDispatchToProps(dispatch) {
       return {
-        getUserById: (userId) => dispatch(userActions.fetchUserbyId(parseInt(userId, 10))),
+        getProductById: (productId) => dispatch(productActions.fetchProductbyId(parseInt(productId, 10))),
       };
     }
     
-    export default connect(mapStateToProps, mapDispatchToProps)(withRouter(UserData));
+    export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductData));
     
 
 

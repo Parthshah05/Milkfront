@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Switch, Route, Router, BrowserRouter } from "react-router-dom";
 
 import Signin from "./components/user/signin";
 import Signup from "./components/user/signup";
@@ -13,12 +13,17 @@ import BundleInsert from "./components/bundle/bundleinsert";
 import Bundle_ProductInsert from "./components/bundle_product/bundle_productinsert";
 import RoleInsert from "./components/role/roleinsert";
 import UserInsert from "./components/user/userinsert";
+import UserData from "./components/user/userdata";
+import UserUpdate from "./components/user/userupdate";
+import ProductData from "./components/product/productdata";
+import createHistory from 'history/createHashHistory';
 
+export const history = createHistory();
 
 const Routes = () => {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter >
         <Switch>
           <Route path="/signup" component={Signup} />
          
@@ -33,8 +38,9 @@ const Routes = () => {
           <Route path="/bundle_productinsert" exact component={Bundle_ProductInsert} />
           <Route path="/roleinsert" exact component={RoleInsert} />
           <Route path="/userinsert" exact component={UserInsert} />
-          
-          
+          <Route path="/userdata/:id" exact component={UserData} />
+          <Route path="/userupdate" exact component={UserUpdate} />
+          <Route path="/productdata/:id" exact component={ProductData} />
           {/* <Route path="/" exact component={Home} /> */}
         </Switch>
       </BrowserRouter>

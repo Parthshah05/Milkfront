@@ -2,7 +2,8 @@ import React,{Component}  from "react";
 import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import * as productActions from "../../store/actions/productAction";
 import { addProductMutation } from '../../queries/queries';
 
 import {
@@ -18,6 +19,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { connect } from "react-redux";
 
 
 
@@ -37,17 +39,21 @@ class ProductInsert extends Component {
      
      
     submitForm(e){
-        e.preventDefault()
+     
         // use the adduserMutation
-        this.props.addProductMutation({
-            variables: {
-                name: this.state.name,
-                description: this.state.description,
-                image: this.state.image,
-                price:parseInt(this.state.price)
-            },
+        e.preventDefault();
+        this.props.InsertProduct(this.state.name,this.state.description, parseInt(this.state.price),this.state.image)
+        
+        // this.props.addProductMutation({
+        //     variables: {
+        //         name: this.state.name,
+        //         description: this.state.description,
+        //         image: this.state.image,
+        //         price:parseInt(this.state.price)
+        //     },
           
-        }).then((data) => {
+        // })
+        .then(() => {
           this.props.history.push("/product");
         })
         .catch((error) => {
@@ -168,11 +174,30 @@ class ProductInsert extends Component {
     }
 }
 
-
-
-export default compose(
-    graphql(addProductMutation, { name: "addProductMutation" }),
+function mapStateToProps({ product }) {
+  return {
+    //error: user.error,
+    loading: product.loading,
+    productDetails: product.productDetails,
     
-)(ProductInsert);
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+   
+    InsertProduct: (name, description, price, image) =>
+      dispatch(productActions.InsertProduct(name, description, price, image)),
+
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductInsert));
+
+
+// export default compose(
+//     graphql(addProductMutation, { name: "addProductMutation" }),
+    
+// )(ProductInsert);
 
 

@@ -19,7 +19,7 @@ import Header from "../header";
 //   deleteUserMutation,
 //   getUserByIdMutation,
 // } from "../../queries/queries";
-import UserData from "./userdata";
+//import UserData from "./userdata";
 import * as userActions from "../../store/actions/userAction";
 import { connect } from "react-redux";
 
@@ -36,10 +36,11 @@ class UserList extends Component {
 
   componentDidMount() {
    
-    // if(localStorage.getItem('userLogin') == null)
-    // {
-    //    this.props.history.push('/');
-    // }
+    if(localStorage.getItem('userLogin') == null)
+    {
+       this.props.history.push('/');
+       return ;
+    }
    
     const { getAllUsers } = this.props;
     if (getAllUsers == null )
@@ -49,6 +50,12 @@ class UserList extends Component {
     else{
     getAllUsers();
     }
+  }
+
+  handleEdit = (selectedUser) => {
+    const { setSelectedUser } = this.props;
+    setSelectedUser(selectedUser);
+    this.props.history.push('/userupdate');
   }
 
   displayUsers() {
@@ -61,7 +68,7 @@ class UserList extends Component {
     } else if (loading) {
       return <div>Loading Users...</div>;
     } else {
-      // localStorage.setItem("data", data);
+      
       return userList.map((user) => {
         return (
           <tr>
@@ -70,7 +77,9 @@ class UserList extends Component {
             <td>{user.email}</td>
             <td>{user.role.name}</td>
             <td>
-              <Button color="info">Edit</Button>
+              <Button color="info" onClick={() => this.handleEdit(user)}>
+                Edit
+              </Button>
               &nbsp;&nbsp;&nbsp;
               <Button
                 color="danger"
@@ -78,7 +87,9 @@ class UserList extends Component {
                   deleteUser(user.id);
                 }}
               >
+              
                 Delete
+               
               </Button>
               &nbsp;&nbsp;&nbsp;
               <Button
@@ -86,7 +97,9 @@ class UserList extends Component {
                 key={user.id}
                 onClick={(e) => this.setState({ selected: user.id })}
               >
+              <Link to={`/userdata/${user.id}`}> 
                 View
+                </Link>
               </Button>
             </td>
           </tr>
@@ -142,7 +155,7 @@ class UserList extends Component {
             </Col>
           </Row>
         </Container>
-        <UserData UserId={this.state.selected} />
+       
       </div>
     );
   }
@@ -160,6 +173,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getAllUsers: () => dispatch(userActions.fetchUsers()),
     deleteUser: (userId) => dispatch(userActions.deleteUser(userId)),
+    setSelectedUser: (selectedUser) => dispatch(userActions.setSelectedUser(selectedUser)),
   };
 }
 

@@ -25,6 +25,28 @@ const adduserMutation = gql`
     ) {
       name
       email
+      token
+    }
+  }
+`;
+
+const updateuserMutation = gql`
+  mutation updateUser(
+    $name: String
+    $email: String
+    $password: String
+    $id: Int
+  ) {
+    updateUser(
+      name: $name
+      email: $email
+      password: $password
+      id: $id
+    ) {
+      name
+      email
+      password
+      id
     }
   }
 `;
@@ -104,15 +126,28 @@ const deleteBundle_ProductMutation = gql`
   }
 `;
 
-const getUserByIdMutation = gql`
-  mutation getUser($id: Int) {
-    getUser(id: $id) {
+const getUserByIdMutation = (userId) => gql`
+{
+  getUser(id: ${userId}) {
       id
       name
       email
+      token
       role {
         name
       }
+    }
+  }
+`;
+
+const getProductByIdMutation = (productId) => gql`
+{
+  getProduct(id: ${productId}) {
+      id
+      name
+      description
+      price
+      image
     }
   }
 `;
@@ -179,7 +214,9 @@ export {
   adduserMutation,
   deleteProductMutation,
   getUserByIdMutation,
+  getProductByIdMutation,
   getroleQuery,
+  updateuserMutation,
   getbundle_productQuery,
   deleteUserMutation,
   addProductMutation,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
   Table,
   Container,
@@ -11,26 +11,59 @@ import {
   CardBody,
 } from "reactstrap";
 
+import * as bundleActions from "../../store/actions/bundleAction";
 import { graphql,Mutation } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
 import Header from "../header";
 import { getbundleQuery,deleteBundleMutation } from "../../queries/queries";
+import { connect } from "react-redux";
 
 
 class BundleList extends Component {
+
+  constructor(props) {
+    
+    super(props);
+    this.state = {
+      selected: null,
+    };
+   
+  }
+  componentDidMount() {
+   
+    if(localStorage.getItem('userLogin') == null)
+    {
+       this.props.history.push('/');
+       return ;
+    }
+   
+    const { getAllBundles } = this.props;
+    if (getAllBundles == null )
+    {
+     //
+    }
+    else{
+    getAllBundles();
+    }
+  }
+
   
 
     displayBundles(){
-      if(localStorage.getItem('userLogin') == null)
-  {
-     this.props.history.push('/');
-  }
-        var data = this.props.getbundleQuery;
-        if(data.error == null) {
-       if(data.loading){
-            return( <div>Loading Users...</div> );
-        } else {
-         return data.getBundle.map(bund => {
+      const { loading, error, bundleList,deleteBundle } = this.props;
+   
+
+      if (error) {
+        return <div>Something went wrong!</div>;
+      } else if (loading) {
+        return <div>Loading Users...</div>;
+      } else {
+      //   var data = this.props.getbundleQuery;
+      //   if(data.error == null) {
+      //  if(data.loading){
+      //       return( <div>Loading Users...</div> );
+      //   } else {
+         return bundleList.map(bund => {
              return (
                  <tr>
                <td >
@@ -44,7 +77,7 @@ class BundleList extends Component {
                Edit
            </Button>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           <Mutation mutation={deleteBundleMutation}>
+           {/* <Mutation mutation={deleteBundleMutation}>
         {(mutation) => (
         <Button color="danger"
          onClick={() => {
@@ -57,9 +90,20 @@ class BundleList extends Component {
         Delete
         </Button>
         )}
-        </Mutation>
-        &nbsp;&nbsp;&nbsp;
-        <Button color="success" >View</Button></td>
+        </Mutation> */}
+        <Button
+                color="danger"
+                onClick={() => {
+                  deleteBundle(bund.id);
+                }}
+              >
+              
+                Delete
+               
+              </Button>
+
+      
+      </td>
            </tr>
    
              );
@@ -67,7 +111,7 @@ class BundleList extends Component {
          });
         }
       }
-    }
+    
     
 
   render() {
@@ -123,8 +167,25 @@ class BundleList extends Component {
     );
   }
 }
-export default compose(
+
+function mapStateToProps({ bundle }) {
+  return {
+    error: bundle.error,
+    loading: bundle.loading,
+    bundleList: bundle.bundleList,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getAllBundles: () => dispatch(bundleActions.fetchBundles()),
+    deleteBundle: (bundleId) => dispatch(bundleActions.deleteBundle(bundleId)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BundleList));
+// export default compose(
     
-    graphql(getbundleQuery, { name: "getbundleQuery" }),
-    graphql(deleteBundleMutation, { name: "deleteBundleMutation" })
-)(BundleList);
+//     graphql(getbundleQuery, { name: "getbundleQuery" }),
+//     graphql(deleteBundleMutation, { name: "deleteBundleMutation" })
+// )(BundleList);
