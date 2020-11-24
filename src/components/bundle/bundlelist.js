@@ -12,10 +12,10 @@ import {
 } from "reactstrap";
 
 import * as bundleActions from "../../store/actions/bundleAction";
-import { graphql,Mutation } from 'react-apollo';
-import {flowRight as compose} from 'lodash';
+//import { graphql,Mutation } from 'react-apollo';
+//import {flowRight as compose} from 'lodash';
 import Header from "../header";
-import { getbundleQuery,deleteBundleMutation } from "../../queries/queries";
+//import { getbundleQuery,deleteBundleMutation } from "../../queries/queries";
 import { connect } from "react-redux";
 
 
@@ -47,7 +47,11 @@ class BundleList extends Component {
     }
   }
 
-  
+  handleEdit = (selectedBundle) => {
+    const { setSelectedBundle } = this.props;
+    setSelectedBundle(selectedBundle);
+    this.props.history.push("/bundleupdate");
+  };
 
     displayBundles(){
       const { loading, error, bundleList,deleteBundle } = this.props;
@@ -73,7 +77,7 @@ class BundleList extends Component {
                {bund.name}
            </td>
           
-           <td><Button color="info">
+           <td><Button color="info" onClick={() => this.handleEdit(bund)}>
                Edit
            </Button>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -180,6 +184,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getAllBundles: () => dispatch(bundleActions.fetchBundles()),
     deleteBundle: (bundleId) => dispatch(bundleActions.deleteBundle(bundleId)),
+    setSelectedBundle: (selectedBundle) =>
+      dispatch(bundleActions.setSelectedBundle(selectedBundle)),
   };
 }
 

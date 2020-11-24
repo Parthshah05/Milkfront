@@ -8,6 +8,10 @@ import {
   INSERT_BUNDLE_FAIL,
   INSERT_BUNDLE_START,
   INSERT_BUNDLE_SUCCESS,
+  UPDATE_BUNDLE_FAIL,
+  UPDATE_BUNDLE_START,
+  UPDATE_BUNDLE_SUCCESS,
+  SELECT_BUNDLE,
     
   } from "../actions/actionType";
   
@@ -47,27 +51,43 @@ import {
           bundleList: action.bundleList,
         };
         
-    //     case UPDATE_USER_START:
-    //     return {
-    //       ...state,
-    //       error: false,
-    //       loading: true,
-    //       selectedUser: null,
-    //     };
-    //   case UPDATE_USER_FAIL:
-    //     return {
-    //       ...state,
-    //       error: true,
-    //       loading: false,
-    //       userList: null,
-    //     };
-    //   case UPDATE_USER_SUCCESS:
-    //     return {
-    //       ...state,
-    //       error: false,
-    //       loading: false,
-    //       userList: action.userId,
-    //     };
+        case UPDATE_BUNDLE_START:
+          return {
+            ...state,
+            error: false,
+            loading: true,
+          };
+        case UPDATE_BUNDLE_FAIL:
+          return {
+            ...state,
+            error: true,
+            loading: false,
+          };
+        case UPDATE_BUNDLE_SUCCESS:
+          const bundleList = state.bundleList;
+          const udpatedIndex = bundleList.findIndex(
+            ({ id }) => action.selectedBundle.id === id
+          );
+    
+          if (udpatedIndex !== -1) {
+            bundleList[udpatedIndex] = {
+              ...bundleList[udpatedIndex],
+              ...action.selectedBundle,
+            };
+          }
+    
+          return {
+            ...state,
+            error: false,
+            loading: false,
+            selectedBundle: action.selectedBundle,
+            bundleList,
+          };
+        case SELECT_BUNDLE:
+          return {
+            ...state,
+            selectedBundle: action.selectedBundle,
+          };
       
       case DELETE_BUNDLE_START:
         return {

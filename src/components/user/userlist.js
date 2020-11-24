@@ -11,15 +11,9 @@ import {
   CardHeader,
   CardBody,
 } from "reactstrap";
-// import { graphql } from "react-apollo";
-// import { flowRight as compose } from "lodash";
+
 import Header from "../header";
-// import {
-//   getuserQuery,
-//   deleteUserMutation,
-//   getUserByIdMutation,
-// } from "../../queries/queries";
-//import UserData from "./userdata";
+
 import * as userActions from "../../store/actions/userAction";
 import { connect } from "react-redux";
 

@@ -1,10 +1,9 @@
 import React,{Component}  from "react";
 import Header from "../header";
-import { graphql } from 'react-apollo';
-import {flowRight as compose} from 'lodash';
+
 import { Link, withRouter } from "react-router-dom";
 import * as productActions from "../../store/actions/productAction";
-import { addProductMutation } from '../../queries/queries';
+
 
 import {
   Card,
@@ -195,9 +194,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductInsert));
 
 
-// export default compose(
-//     graphql(addProductMutation, { name: "addProductMutation" }),
-    
-// )(ProductInsert);
 
 

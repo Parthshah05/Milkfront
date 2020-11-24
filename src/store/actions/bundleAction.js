@@ -4,6 +4,7 @@ import {
   getbundleQuery,
   deleteBundleMutation,
   addBundleMutation,
+  updateBundleMutation,
   
 } from "../../queries/queries";
 import {
@@ -16,6 +17,10 @@ import {
   INSERT_BUNDLE_FAIL,
   INSERT_BUNDLE_START,
   INSERT_BUNDLE_SUCCESS,
+  UPDATE_BUNDLE_FAIL,
+  UPDATE_BUNDLE_START,
+  UPDATE_BUNDLE_SUCCESS,
+  SELECT_BUNDLE,
   
   
 } from "./actionType";
@@ -53,39 +58,6 @@ export const fetchBundles = () => {
 };
 
 
-// const fetchUserUpdateStart = {
-//   type: UPDATE_USER_START,
-// };
-
-// const fetchUserUpdateFail = {
-//   type: UPDATE_USER_FAIL,
-// };
-
-// const fetchUserUpdateSuccess = (selectedUser) => {
-//   return {
-//     type: UPDATE_USER_SUCCESS,
-//     selectedUser,
-//   };
-// };
-
-// export const fetchUserUpdateId = (userId) => {
-//   return async (dispatch) => {
-    
-//     dispatch(fetchUserUpdateStart);
-
-//     const { data } = await client.query({
-//       mutation: updateuserMutation,
-//       variables: { id: userId },
-//     });
-
-//     if (data.error) {
-//       dispatch(fetchUserUpdateFail);
-//     } else {
-//       dispatch(fetchUserUpdateSuccess(data.updateUser));
-//     }
-//   };
-// };
-
 
 const deleteBundleStart = {
   type: DELETE_BUNDLE_START,
@@ -118,6 +90,51 @@ export const deleteBundle = (bundleId) => {
     }
   };
 };
+
+const fetchBundleUpdateStart = {
+  type: UPDATE_BUNDLE_START,
+};
+
+const fetchBundleUpdateFail = {
+  type: UPDATE_BUNDLE_FAIL,
+};
+
+const fetchBundleUpdateSuccess = (selectedBundle) => {
+  return {
+    type: UPDATE_BUNDLE_SUCCESS,
+    selectedBundle,
+  };
+};
+
+export const fetchBundleUpdateId = ({ id, name }) => {
+  return async (dispatch) => {
+   
+    dispatch(fetchBundleUpdateStart);
+
+    const { data } = await client.mutate({
+      mutation:updateBundleMutation,
+      variables: { id, name },
+    });
+
+    if (data.error) {
+      dispatch(fetchBundleUpdateFail);
+    } else {
+      dispatch(fetchBundleUpdateSuccess(data.updateBundle));
+     
+     
+    }
+  };
+};
+
+export const setSelectedBundle = (selectedBundle) => {
+  return (dispatch) => {
+    dispatch({
+      type: SELECT_BUNDLE,
+      selectedBundle,
+    })
+  }
+};
+
 
 
 const insertBundleStart = {

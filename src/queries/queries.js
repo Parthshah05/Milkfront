@@ -79,6 +79,31 @@ const addProductMutation = gql`
   }
 `;
 
+const updateproductMutation = gql`
+  mutation updateProduct(
+    $name: String
+    $description: String
+    $price: Int
+    $image:String
+    $id: Int
+  ) {
+    updateProduct(
+      name: $name
+      description: $description
+      price: $price
+      image:$image
+      id: $id
+    ) {
+      name
+      description
+      price
+      image
+      id
+    }
+  }
+`;
+
+
 const addBundleMutation = gql`
   mutation addBundle($name: String) {
     addBundle(name: $name) {
@@ -86,6 +111,25 @@ const addBundleMutation = gql`
     }
   }
 `;
+
+const updateBundleMutation = gql`
+  mutation updateBundle(
+    $name: String
+   
+    $id: Int
+  ) {
+    updateBundle(
+      name: $name
+     
+      id: $id
+    ) {
+      name
+      
+      id
+    }
+  }
+`;
+
 
 const addRoleMutation = gql`
   mutation addRole($name: String) {
@@ -215,6 +259,7 @@ export {
   deleteProductMutation,
   getUserByIdMutation,
   getProductByIdMutation,
+  updateBundleMutation,
   getroleQuery,
   updateuserMutation,
   getbundle_productQuery,
@@ -227,5 +272,6 @@ export {
   addBundle_ProductMutation,
   getproductQuery,
   getbundleQuery,
+  updateproductMutation,
   getuserQuery,
 };

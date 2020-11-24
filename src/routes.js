@@ -16,9 +16,12 @@ import UserInsert from "./components/user/userinsert";
 import UserData from "./components/user/userdata";
 import UserUpdate from "./components/user/userupdate";
 import ProductData from "./components/product/productdata";
-import createHistory from 'history/createHashHistory';
+import ProductUpdate from "./components/product/productupdate";
+import BundleUpdate from "./components/bundle/bundleupdate";
 
-export const history = createHistory();
+// import createHistory from 'history/createHashHistory';
+
+// export const history = createHistory();
 
 const Routes = () => {
   return (
@@ -41,6 +44,8 @@ const Routes = () => {
           <Route path="/userdata/:id" exact component={UserData} />
           <Route path="/userupdate" exact component={UserUpdate} />
           <Route path="/productdata/:id" exact component={ProductData} />
+          <Route path="/productupdate" exact component={ProductUpdate} />
+          <Route path="/bundleupdate" exact component={BundleUpdate} />
           {/* <Route path="/" exact component={Home} /> */}
         </Switch>
       </BrowserRouter>

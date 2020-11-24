@@ -2,8 +2,10 @@ import React,{Component}  from "react";
 import Header from "../header";
 import { graphql } from 'react-apollo';
 import {flowRight as compose} from 'lodash';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { addBundleMutation } from '../../queries/queries';
+import * as bundleActions from "../../store/actions/bundleAction";
+
 
 import {
   Card,
@@ -18,6 +20,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { connect } from "react-redux";
 
 
 class BundleInsert extends Component {
@@ -34,13 +37,7 @@ class BundleInsert extends Component {
     submitForm(e){
         e.preventDefault()
         // use the adduserMutation
-        this.props.addBundleMutation({
-            variables: {
-                name: this.state.name,
-               
-            },
-          
-        }).then((data) => {
+        this.props.InsertBundle(this.state.name).then((data) => {
           this.props.history.push("/bundle");
         })
         .catch((error) => {
@@ -130,10 +127,27 @@ class BundleInsert extends Component {
             
     }
 }
-
-
-
-export default compose(
-    graphql(addBundleMutation, { name: "addBundleMutation" }),
+function mapStateToProps({ bundle }) {
+  return {
     
-)(BundleInsert);
+    loading: bundle.loading,
+    bundleDetails: bundle.productDetails,
+    
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {
+   
+    InsertBundle: (name) =>
+      dispatch(bundleActions.InsertBundle(name)),
+
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BundleInsert));
+
+
+// export default compose(
+//     graphql(addBundleMutation, { name: "addBundleMutation" }),
+    
+// )(BundleInsert);

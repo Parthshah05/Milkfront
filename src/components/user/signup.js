@@ -55,7 +55,8 @@ class Signup extends Component {
   
     submitForm(e) {
       e.preventDefault();
-      this.props.RegisterUser(this.state.name,this.state.email, this.state.password,parseInt(this.state.role_id)).then(() => {
+      this.props.RegisterUser(this.state.name,this.state.email, this.state.password,parseInt(this.state.role_id))
+      .then(() => {
         this.props.history.push("/");
       })
       .catch((error) => {

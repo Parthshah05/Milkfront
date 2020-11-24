@@ -18,9 +18,9 @@ import {
 import Header from "../header";
 import { connect } from "react-redux";
 
-import * as userActions from "../../store/actions/userAction";
+import * as bundleActions from "../../store/actions/bundleAction";
 
-class UserUpdate extends Component {
+class BundleUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,14 +29,14 @@ class UserUpdate extends Component {
       errormessage: "",
     };
 
-    const { selectedUser, history } = props;
+    const { selectedBundle, history } = props;
 
-    if (!selectedUser) {
-      history.push("/userlist");
+    if (!selectedBundle) {
+      history.push("/bundle");
     }
 
     this.state = {
-      ...selectedUser,
+      ...selectedBundle,
     };
   }
 
@@ -61,8 +61,8 @@ class UserUpdate extends Component {
         </div>
       );
     };
-    const { name, email, password } = this.state;
-    const { updateUserMutation } = this.props;
+    const { name } = this.state;
+    const { updateBundleMutation } = this.props;
 
     return (
       <div>
@@ -89,50 +89,29 @@ class UserUpdate extends Component {
                       borderColor: "#1ABC9C",
                     }}
                   >
-                    <Link to="/userlist">Back</Link>
+                    <Link to="/bundle">Back</Link>
                   </Button>
                 </Col>
                 {errorMessage()}
                 <CardBody>
                   <Form>
                     <FormGroup>
-                      <Label for="exampleFirstName"> Name:</Label>
+                      <Label for="exampleName"> Name:</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="exampleFirstName"
-                        placeholder="Edit your Name"
+                        id="exampleName"
+                        placeholder="Edit your Product Name"
                         value={name}
                         onChange={(e) => this.handleInputChange(e, "name")}
                       />
                     </FormGroup>
-                    <FormGroup>
-                      <Label for="exampleemail">Email:</Label>
-                      <Input
-                        type="email"
-                        name="email"
-                        id="exampleLastName"
-                        placeholder="Edit your Email"
-                        value={email}
-                        onChange={(e) => this.handleInputChange(e, "email")}
-                      />
-                    </FormGroup>
-                    {/* <FormGroup>
-                      <Label for="examplepass">Password:</Label>
-                      <Input
-                        type="password"
-                        name="password"
-                        id="examplepass"
-                        placeholder="Edit your Password"
-                        value={password}
-                        onChange={(e) => this.handleInputChange(e, "password")}
-                      />
-                    </FormGroup> */}
+                    
                     <Button
                       onClick={() =>
-                        updateUserMutation(this.state)
+                        updateBundleMutation(this.state)
                           .then((data) => {
-                            this.props.history.push("/userlist");
+                            this.props.history.push("/bundle");
                           })
                           .catch((error) => {
                             console.log(error);
@@ -154,9 +133,7 @@ class UserUpdate extends Component {
                       <b>Update</b>
                     </Button>
                   </Form>
-                  {/* <tbody>
-                    {this.displayUserData(selectedUser)}
-                </tbody> */}
+                 
                 </CardBody>
               </Card>
             </Col>
@@ -167,22 +144,22 @@ class UserUpdate extends Component {
   }
 }
 
-function mapStateToProps({ user }) {
+function mapStateToProps({ bundle }) {
   return {
-    error: user.error,
-    loading: user.loading,
-    selectedUser: user.selectedUser,
+    error: bundle.error,
+    loading: bundle.loading,
+    selectedBundle: bundle.selectedBundle,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserMutation: (userData) =>
-      dispatch(userActions.fetchUserUpdateId(userData)),
+    updateBundleMutation: (bundleData) =>
+      dispatch(bundleActions.fetchBundleUpdateId(bundleData)),
   };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(UserUpdate));
+)(withRouter(BundleUpdate));

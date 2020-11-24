@@ -10,131 +10,83 @@ import {
   CardHeader,
   CardBody,
 } from "reactstrap";
-// import { graphql,Mutation } from 'react-apollo';
-// import {flowRight as compose} from 'lodash';
+
 import * as productActions from "../../store/actions/productAction";
 import Header from "../header";
-//import { getproductQuery,deleteProductMutation } from "../../queries/queries";
+
 import { connect } from "react-redux";
 
-
-
 class ProductList extends Component {
-
   constructor(props) {
-    
     super(props);
     this.state = {
       selected: null,
     };
-   
   }
   componentDidMount() {
-   
-    if(localStorage.getItem('userLogin') == null)
-    {
-       this.props.history.push('/');
-       return ;
+    if (localStorage.getItem("userLogin") == null) {
+      this.props.history.push("/");
+      return;
     }
-   
+
     const { getAllProducts } = this.props;
-    if (getAllProducts == null )
-    {
-     //
-    }
-    else{
-    getAllProducts();
+    if (getAllProducts == null) {
+      //
+    } else {
+      getAllProducts();
     }
   }
+  handleEdit = (selectedProduct) => {
+    const { setSelectedProduct } = this.props;
+    setSelectedProduct(selectedProduct);
+    this.props.history.push("/productupdate");
+  };
 
+  displayProducts() {
+    const { loading, error, productList, deleteProduct } = this.props;
 
-    displayProducts(){
+    if (error) {
+      return <div>Something went wrong!</div>;
+    } else if (loading) {
+      return <div>Loading Products...</div>;
+    } else {
+      return productList.map((prod) => {
+        return (
+          <tr>
+            <td>{prod.id}</td>
+            <td>{prod.name}</td>
+            <td>{prod.description}</td>
 
-  //     if(localStorage.getItem('userLogin') == null)
-  // {
-  //    this.props.history.push('/');
-  // }
-  //       var data = this.props.getproductQuery;
-
-        const { loading, error, productList,deleteProduct } = this.props;
-   
-
-        if (error) {
-          return <div>Something went wrong!</div>;
-        } else if (loading) {
-          return <div>Loading Users...</div>;
-        } else {
-      //  if(data.error == null) {
-      //  if(data.loading){
-      //       return( <div>Loading Users...</div> );
-      //   } else {
-         return productList.map(prod => {
-             return (
-                 <tr>
-               <td >
-               {prod.id}
-           </td>
-           <td>
-               {prod.name}
-           </td>
-           <td>{prod.description}</td>
-          
-           <td>{prod.price}</td>
-           <td><Button color="info">
-               Edit
-           </Button>
-           {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           <Mutation mutation={deleteProductMutation}>
-        {(mutation) => (
-        <Button color="danger"
-         onClick={() => {
-                mutation({
-                  variables: { id: prod.id },
-                  refetchQueries: [{ query: getproductQuery }],
-                });
-              }}
-              >
-        Delete
-        </Button> 
-        </Mutation>*/}
-        &nbsp;&nbsp;&nbsp;
-        <Button
+            <td>{prod.price}</td>
+            <td>
+              <Button color="info" onClick={() => this.handleEdit(prod)}>
+                Edit
+              </Button>
+              &nbsp;&nbsp;&nbsp;
+              <Button
                 color="danger"
                 onClick={() => {
                   deleteProduct(prod.id);
                 }}
               >
-              
                 Delete
-               
               </Button>
-       
-        
-        &nbsp;&nbsp;&nbsp;
-        <Button
+              &nbsp;&nbsp;&nbsp;
+              <Button
                 color="success"
                 key={prod.id}
                 onClick={(e) => this.setState({ selected: prod.id })}
               >
-              <Link to={`/productdata/${prod.id}`}> 
-                View
-                </Link>
+                <Link to={`/productdata/${prod.id}`}>View</Link>
               </Button>
-        </td>
-           </tr>
-   
-             );
-   
-         });
-        }
-      }
-   
-    
-    
+            </td>
+          </tr>
+        );
+      });
+    }
+  }
 
   render() {
-    
-
     return (
       <div>
         <Header />
@@ -153,17 +105,15 @@ class ProductList extends Component {
                 </CardHeader>
                 <br></br>
                 <Col sm="4">
-                <Button
-                
-                
-                style={{
-                    background: "#1ABC9C",
-                    color: "#BC1A4B",
-                    borderColor: "#1ABC9C",
-                }}
-                >
-                <Link to="/productinsert">Add Product</Link>
-                </Button>
+                  <Button
+                    style={{
+                      background: "#1ABC9C",
+                      color: "#BC1A4B",
+                      borderColor: "#1ABC9C",
+                    }}
+                  >
+                    <Link to="/productinsert">Add Product</Link>
+                  </Button>
                 </Col>
                 <CardBody>
                   <Table bordered>
@@ -172,16 +122,12 @@ class ProductList extends Component {
                         <th>Id</th>
                         <th>Name</th>
                         <th>Description</th>
-                       
+
                         <th>Price</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
-                    {this.displayProducts()}
-                      
-                    </tbody>
-                
+                    <tbody>{this.displayProducts()}</tbody>
                   </Table>
                 </CardBody>
               </Card>
@@ -204,16 +150,14 @@ function mapStateToProps({ product }) {
 function mapDispatchToProps(dispatch) {
   return {
     getAllProducts: () => dispatch(productActions.fetchProducts()),
-    deleteProduct: (productId) => dispatch(productActions.deleteProduct(productId)),
+    deleteProduct: (productId) =>
+      dispatch(productActions.deleteProduct(productId)),
+    setSelectedProduct: (selectedProduct) =>
+      dispatch(productActions.setSelectedProduct(selectedProduct)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductList));
-
-// export default compose(
-    
-//     graphql(getproductQuery, { name: "getproductQuery" }),
-//     graphql(deleteProductMutation,{name:"deleteProductMutation"})
-// )(ProductList);
-
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(ProductList));

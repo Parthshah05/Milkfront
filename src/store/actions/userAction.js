@@ -1,5 +1,6 @@
 import client from "../../client";
-import { history } from "../../routes";
+
+//import { history } from "../../routes";
 //import { authenticate } from "../../components/auth/authentication";
 import {
   getuserQuery,
@@ -117,7 +118,7 @@ const fetchUserUpdateSuccess = (selectedUser) => {
 
 export const fetchUserUpdateId = ({ id, name, email, password }) => {
   return async (dispatch) => {
-    
+   
     dispatch(fetchUserUpdateStart);
 
     const { data } = await client.mutate({
@@ -129,7 +130,8 @@ export const fetchUserUpdateId = ({ id, name, email, password }) => {
       dispatch(fetchUserUpdateFail);
     } else {
       dispatch(fetchUserUpdateSuccess(data.updateUser));
-      history.push('/userlist');
+      //history.push('/userlist');
+     
     }
   };
 };

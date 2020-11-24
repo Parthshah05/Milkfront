@@ -5,6 +5,7 @@ import {
   deleteProductMutation,
   addProductMutation,
   getProductByIdMutation,
+  updateproductMutation,
 } from "../../queries/queries";
 import {
   GET_PRODUCTS_LIST_START,
@@ -16,6 +17,10 @@ import {
   INSERT_PRODUCT_FAIL,
   INSERT_PRODUCT_START,
   INSERT_PRODUCT_SUCCESS,
+  UPDATE_PRODUCT_SUCCESS,
+  UPDATE_PRODUCT_START,
+  SELECT_PRODUCT,
+  UPDATE_PRODUCT_FAIL,
   GET_PRODUCTBYID_LIST_START,
   GET_PRODUCTBYID_LIST_FAIL,
   GET_PRODUCTBYID_LIST_SUCCESS,
@@ -86,38 +91,50 @@ export const fetchProductbyId = (productId) => {
   };
 };
 
-// const fetchUserUpdateStart = {
-//   type: UPDATE_USER_START,
-// };
+const fetchProductUpdateStart = {
+  type: UPDATE_PRODUCT_START,
+};
 
-// const fetchUserUpdateFail = {
-//   type: UPDATE_USER_FAIL,
-// };
+const fetchProductUpdateFail = {
+  type: UPDATE_PRODUCT_FAIL,
+};
 
-// const fetchUserUpdateSuccess = (selectedUser) => {
-//   return {
-//     type: UPDATE_USER_SUCCESS,
-//     selectedUser,
-//   };
-// };
+const fetchProductUpdateSuccess = (selectedProduct) => {
+  return {
+    type: UPDATE_PRODUCT_SUCCESS,
+    selectedProduct,
+  };
+};
 
-// export const fetchUserUpdateId = (userId) => {
-//   return async (dispatch) => {
-    
-//     dispatch(fetchUserUpdateStart);
+export const fetchProductUpdateId = ({ id, name, description,price,image }) => {
+  return async (dispatch) => {
+   
+    dispatch(fetchProductUpdateStart);
 
-//     const { data } = await client.query({
-//       mutation: updateuserMutation,
-//       variables: { id: userId },
-//     });
+    const { data } = await client.mutate({
+      mutation:updateproductMutation,
+      variables: { id, name, description, price: parseInt(price), image },
+    });
 
-//     if (data.error) {
-//       dispatch(fetchUserUpdateFail);
-//     } else {
-//       dispatch(fetchUserUpdateSuccess(data.updateUser));
-//     }
-//   };
-// };
+    if (data.error) {
+      dispatch(fetchProductUpdateFail);
+    } else {
+      dispatch(fetchProductUpdateSuccess(data.updateProduct));
+     
+     
+    }
+  };
+};
+
+export const setSelectedProduct = (selectedProduct) => {
+  return (dispatch) => {
+    dispatch({
+      type: SELECT_PRODUCT,
+      selectedProduct,
+    })
+  }
+};
+
 
 
 const deleteProductStart = {

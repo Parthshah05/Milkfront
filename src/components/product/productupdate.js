@@ -18,9 +18,9 @@ import {
 import Header from "../header";
 import { connect } from "react-redux";
 
-import * as userActions from "../../store/actions/userAction";
+import * as productActions from "../../store/actions/productAction";
 
-class UserUpdate extends Component {
+class ProductUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,14 +29,14 @@ class UserUpdate extends Component {
       errormessage: "",
     };
 
-    const { selectedUser, history } = props;
+    const { selectedProduct, history } = props;
 
-    if (!selectedUser) {
-      history.push("/userlist");
+    if (!selectedProduct) {
+      history.push("/product");
     }
 
     this.state = {
-      ...selectedUser,
+      ...selectedProduct,
     };
   }
 
@@ -61,8 +61,8 @@ class UserUpdate extends Component {
         </div>
       );
     };
-    const { name, email, password } = this.state;
-    const { updateUserMutation } = this.props;
+    const { name, description,price,image } = this.state;
+    const { updateProductMutation } = this.props;
 
     return (
       <div>
@@ -89,50 +89,61 @@ class UserUpdate extends Component {
                       borderColor: "#1ABC9C",
                     }}
                   >
-                    <Link to="/userlist">Back</Link>
+                    <Link to="/product">Back</Link>
                   </Button>
                 </Col>
                 {errorMessage()}
                 <CardBody>
                   <Form>
                     <FormGroup>
-                      <Label for="exampleFirstName"> Name:</Label>
+                      <Label for="exampleName"> Name:</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="exampleFirstName"
-                        placeholder="Edit your Name"
+                        id="exampleName"
+                        placeholder="Edit your Product Name"
                         value={name}
                         onChange={(e) => this.handleInputChange(e, "name")}
                       />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="exampleemail">Email:</Label>
+                      <Label for="exampledesc">Description:</Label>
                       <Input
-                        type="email"
-                        name="email"
-                        id="exampleLastName"
-                        placeholder="Edit your Email"
-                        value={email}
-                        onChange={(e) => this.handleInputChange(e, "email")}
+                        type="text"
+                        name="description"
+                        id="exampledesc"
+                        placeholder="Edit your Description"
+                        value={description}
+                        onChange={(e) => this.handleInputChange(e, "description")}
                       />
                     </FormGroup>
-                    {/* <FormGroup>
-                      <Label for="examplepass">Password:</Label>
+                    <FormGroup>
+                      <Label for="exampleprice">Price:</Label>
                       <Input
-                        type="password"
-                        name="password"
-                        id="examplepass"
-                        placeholder="Edit your Password"
-                        value={password}
-                        onChange={(e) => this.handleInputChange(e, "password")}
+                        type="number"
+                        name="price"
+                        id="exampleprice"
+                        placeholder="Edit your Price"
+                        value={price}
+                        onChange={(e) => this.handleInputChange(e, "price")}
                       />
-                    </FormGroup> */}
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="exampleimage">Image:</Label>
+                      <Input
+                        type="text"
+                        name="image"
+                        id="exampleimage"
+                        placeholder="Edit your Image"
+                        value={image}
+                        onChange={(e) => this.handleInputChange(e, "image")}
+                      />
+                    </FormGroup>
                     <Button
                       onClick={() =>
-                        updateUserMutation(this.state)
+                        updateProductMutation(this.state)
                           .then((data) => {
-                            this.props.history.push("/userlist");
+                            this.props.history.push("/product");
                           })
                           .catch((error) => {
                             console.log(error);
@@ -154,9 +165,7 @@ class UserUpdate extends Component {
                       <b>Update</b>
                     </Button>
                   </Form>
-                  {/* <tbody>
-                    {this.displayUserData(selectedUser)}
-                </tbody> */}
+                 
                 </CardBody>
               </Card>
             </Col>
@@ -167,22 +176,22 @@ class UserUpdate extends Component {
   }
 }
 
-function mapStateToProps({ user }) {
+function mapStateToProps({ product }) {
   return {
-    error: user.error,
-    loading: user.loading,
-    selectedUser: user.selectedUser,
+    error: product.error,
+    loading: product.loading,
+    selectedProduct: product.selectedProduct,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserMutation: (userData) =>
-      dispatch(userActions.fetchUserUpdateId(userData)),
+    updateProductMutation: (productData) =>
+      dispatch(productActions.fetchProductUpdateId(productData)),
   };
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(UserUpdate));
+)(withRouter(ProductUpdate));
